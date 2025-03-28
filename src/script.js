@@ -1,4 +1,4 @@
-import GUI from 'lil-gui'
+// import GUI from 'lil-gui'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -8,9 +8,9 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
  * Base
  */
 // Debug
-const gui = new GUI({
-    width: 400
-})
+// const gui = new GUI({
+//     width: 400
+// })
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
