@@ -2,7 +2,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { Sky } from 'three/examples/jsm/objects/Sky.js'
 
 /**
  * Base
@@ -26,9 +26,6 @@ const textureLoader = new THREE.TextureLoader()
 const bakedTexture = textureLoader.load('baked.jpg')
 bakedTexture.colorSpace = THREE.SRGBColorSpace
 bakedTexture.flipY = false
-// Draco loader
-const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('draco/')
 
 // Material
 
@@ -37,9 +34,8 @@ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 
 // GLTF loader
 const gltfLoader = new GLTFLoader()
-gltfLoader.setDRACOLoader(dracoLoader)
 
-gltfLoader.load('portal.glb', (gltf) => {
+gltfLoader.load('kame.glb', (gltf) => {
     gltf.scene.traverse((child) => {
         child.material = bakedMaterial
     })
@@ -50,7 +46,17 @@ gltfLoader.load('portal.glb', (gltf) => {
 /**
  * Object
  */
-
+const waterGeometry = new THREE.PlaneGeometry(200, 200, 32, 32)
+const waterMaterial = new THREE.MeshBasicMaterial({
+    color: 0x3399ff,
+    transparent: true,
+    opacity: 0.4,
+    side: THREE.DoubleSide
+})
+const water = new THREE.Mesh(waterGeometry, waterMaterial)
+water.rotation.x = -Math.PI / 2 // Orienté horizontalement
+water.position.y = 200 // Hauteur initiale
+scene.add(water)
 
 /**
  * Sizes
@@ -79,9 +85,9 @@ window.addEventListener('resize', () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 10
-camera.position.y = 5
-camera.position.z = 12
+camera.position.x = -10
+camera.position.y = 10
+camera.position.z = 15
 scene.add(camera)
 
 // Controls
@@ -105,7 +111,7 @@ const clock = new THREE.Clock()
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
-
+    water.position.y = 1 + 0.2 * Math.sin(elapsedTime * 0.5)
     // Update controls
     controls.update()
 
