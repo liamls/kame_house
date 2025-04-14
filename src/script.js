@@ -4,6 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import waterVertexShader from './shaders/water/vertex.glsl'
 import waterFragmentShader from './shaders/water/fragment.glsl'
+import { cubeMapNode } from 'three/src/nodes/utils/CubeMapNode.js'
+// Theme toggle
+const toggleButton = document.getElementById('toggleTheme')
+let isNight = false
 
 /**
  * Base
@@ -24,14 +28,16 @@ const scene = new THREE.Scene()
  */
 // Texture loader
 const textureLoader = new THREE.TextureLoader()
-const bakedTexture = textureLoader.load('baked.jpg')
-bakedTexture.colorSpace = THREE.SRGBColorSpace
-bakedTexture.flipY = false
+const bakedDayTexture = textureLoader.load('baked-day.jpg')
+const bakedNightTexture = textureLoader.load('baked.jpg')
+bakedDayTexture.colorSpace = THREE.SRGBColorSpace
+bakedDayTexture.flipY = false
+bakedNightTexture.colorSpace = THREE.SRGBColorSpace
+bakedNightTexture.flipY = false
 
 // Material
 
-const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
-
+const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedDayTexture })
 
 // GLTF loader
 const gltfLoader = new GLTFLoader()
@@ -43,13 +49,12 @@ gltfLoader.load('kame.glb', (gltf) => {
     scene.add(gltf.scene)
 })
 
-
 /**
  * Object
  */
 
-debugObject.nearColor = '#046dac'
-debugObject.farColor = '#304270'
+debugObject.nearColor = '#0596ed'
+debugObject.farColor = '#b3d7fb'
 
 const waterGeometry = new THREE.PlaneGeometry(100, 100, 512, 512)
 const waterMaterial = new THREE.ShaderMaterial({
@@ -67,7 +72,6 @@ const waterMaterial = new THREE.ShaderMaterial({
     opacity: 0.95
 });
 
-gui.hide()
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = -Math.PI / 2
 water.position.y = 1.3
@@ -106,9 +110,10 @@ scene.add(camera)
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.minPolarAngle = Math.PI / 3 // 90 degrés en radians
-controls.maxPolarAngle = Math.PI / 3 // 90 degrés en radians
-
+controls.minPolarAngle = Math.PI / 3
+controls.maxPolarAngle = Math.PI / 3
+controls.enableZoom = false;
+controls.enablePan = false;
 /**
  * Renderer
  */
@@ -138,3 +143,16 @@ const tick = () => {
 }
 
 tick()
+
+gui.hide()
+
+toggleButton.addEventListener('click', () => {
+    isNight = !isNight
+    toggleButton.textContent = isNight ? '🌙' : '🌞'
+    bakedMaterial.map = isNight ? bakedNightTexture : bakedDayTexture
+    debugObject.nearColor = isNight ? '#046dac' : '#0596ed'
+    debugObject.farColor = isNight ? '#304270' : '#b3d7fb'
+    waterMaterial.uniforms.uColorNear.value.set(debugObject.nearColor)
+    waterMaterial.uniforms.uColorFar.value.set(debugObject.farColor)
+    bakedMaterial.needsUpdate = true
+})
