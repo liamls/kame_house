@@ -104,7 +104,7 @@ const soundDay = new THREE.Audio(listener)
 const soundNight = new THREE.Audio(listener)
 
 const audioLoader = new THREE.AudioLoader()
-audioLoader.load('music.mp3', (buffer) => soundDay.setBuffer(buffer).setLoop(true).setVolume(0.5))
+audioLoader.load('music-liam.mp3', (buffer) => soundDay.setBuffer(buffer).setLoop(true).setVolume(0.5))
 audioLoader.load('ambient.mp3', (buffer) => soundNight.setBuffer(buffer).setLoop(true).setVolume(0.5))
 
 /**
