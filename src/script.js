@@ -1,17 +1,18 @@
-// import GUI from 'lil-gui'
+import GUI from 'lil-gui'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { Sky } from 'three/examples/jsm/objects/Sky.js'
+import waterVertexShader from './shaders/water/vertex.glsl'
+import waterFragmentShader from './shaders/water/fragment.glsl'
 
 /**
  * Base
  */
 // Debug
-// const gui = new GUI({
-//     width: 400
-// })
-
+const gui = new GUI({
+    width: 300
+})
+const debugObject = {}
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
@@ -46,20 +47,49 @@ gltfLoader.load('kame.glb', (gltf) => {
 /**
  * Object
  */
-const waterGeometry = new THREE.PlaneGeometry(200, 200, 32, 32)
-const waterMaterial = new THREE.MeshBasicMaterial({
-    color: 0x3399ff,
-    transparent: true,
-    opacity: 0.4,
-    side: THREE.DoubleSide
-})
-const water = new THREE.Mesh(waterGeometry, waterMaterial)
-water.rotation.x = -Math.PI / 2 // Orienté horizontalement
-water.position.y = 200 // Hauteur initiale
-scene.add(water)
 
-/**
- * Sizes
+debugObject.depthColor = '#1d368d'
+debugObject.surfaceColor = '#008ae6'
+gui.addColor(debugObject, 'depthColor').onChange(() => { waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor) })
+gui.addColor(debugObject, 'surfaceColor').onChange(() => { waterMaterial.uniforms.uSurfaceColor.value.set(debugObject.surfaceColor) })
+
+const waterGeometry = new THREE.PlaneGeometry(100, 100, 512, 512)
+const waterMaterial = new THREE.ShaderMaterial({
+    vertexShader: waterVertexShader,
+    fragmentShader: waterFragmentShader,
+    uniforms: {
+        uBigWavesElevation: { value: 0.05 }, // Augmenté
+        uBigWavesFrequency: { value: new THREE.Vector2(1, 1.5) }, // Diminué
+        uTime: { value: 0 },
+        uBigWavesSpeed: { value: 0.7 }, // Légèrement diminué
+        uSmallWavesElevation: { value: 0.3 }, // Augmenté
+        uSmallWavesFrequency: { value: 1 }, // Augmenté
+        uSmallWavesSpeed: { value: 0.3 }, // Augmenté
+        uSmallWavesIterations: { value: 3 }, // Augmenté
+        uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
+        uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
+        uColorOffset: { value: 0.1 },
+        uColorMultiplier: { value: 1.3 }
+    }
+});
+
+const water = new THREE.Mesh(waterGeometry, waterMaterial)
+water.rotation.x = -Math.PI / 2
+water.position.y = 1.3
+scene.add(water)
+gui.add(waterMaterial.uniforms.uBigWavesElevation, 'value').min(0).max(2).step(0.01).name("uBigWavesElevation")
+gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'x').min(0).max(10).step(0.01).name("uBigWavesFrequencyX")
+gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'y').min(0).max(10).step(0.01).name("uBigWavesFrequencyY")
+gui.add(waterMaterial.uniforms.uBigWavesSpeed, 'value').min(0).max(4).step(0.01).name('uBigWavesSpeed')
+gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value').min(0).max(1).step(0.01).name('uSmallWavesElevation')
+gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value').min(0).max(20).step(0.01).name('uSmallWavesFrequency')
+gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value').min(0).max(4).step(0.01).name('uSmallWavesSpeed')
+gui.add(waterMaterial.uniforms.uSmallWavesIterations, 'value').min(0).max(5).step(1).name('uSmallWavesIterations')
+gui.add(waterMaterial.uniforms.uColorOffset, 'value').min(0).max(1).step(0.001).name('uColorOffset')
+gui.add(waterMaterial.uniforms.uColorMultiplier, 'value').min(0).max(10).step(0.001).name('uColorMultiplier')
+gui.hide()
+/** 
+* Sizes
  */
 const sizes = {
     width: window.innerWidth,
@@ -67,15 +97,10 @@ const sizes = {
 }
 
 window.addEventListener('resize', () => {
-    // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
-
-    // Update camera
     camera.aspect = sizes.width / sizes.height
     camera.updateProjectionMatrix()
-
-    // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
@@ -84,15 +109,17 @@ window.addEventListener('resize', () => {
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = -10
-camera.position.y = 10
+const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 1000)
+camera.position.x = -2
+camera.position.y = 9
 camera.position.z = 15
 scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+controls.minPolarAngle = Math.PI / 3 // 90 degrés en radians
+controls.maxPolarAngle = Math.PI / 3 // 90 degrés en radians
 
 /**
  * Renderer
@@ -111,7 +138,7 @@ const clock = new THREE.Clock()
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
-    water.position.y = 1 + 0.2 * Math.sin(elapsedTime * 0.5)
+    waterMaterial.uniforms.uTime.value = elapsedTime
     // Update controls
     controls.update()
 
