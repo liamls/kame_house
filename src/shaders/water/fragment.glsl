@@ -57,8 +57,8 @@ void main() {
 
     vec3 combinedEffect = min(waveEffect + foam, 1.0);
 
-    float vignette = length(vUv - 0.5) * 1.5;
-    vec3 baseEffect = smoothstep(0.1, 0.3, vec3(vignette));
+    float vignette = length(vUv - 0.5) * 1.2; // Réduction du facteur multiplicatif
+    vec3 baseEffect = smoothstep(0.2, 0.4, vec3(vignette)); // Ajustement des seuils
     vec3 baseColor = mix(finalColor, uColorFar, baseEffect);
 
     combinedEffect = min(waveEffect + foam, 1.0);

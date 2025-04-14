@@ -49,7 +49,7 @@ gltfLoader.load('kame.glb', (gltf) => {
  */
 
 debugObject.nearColor = '#046dac'
-debugObject.farColor = '#1768a4'
+debugObject.farColor = '#304270'
 
 const waterGeometry = new THREE.PlaneGeometry(100, 100, 512, 512)
 const waterMaterial = new THREE.ShaderMaterial({
