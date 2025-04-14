@@ -56,7 +56,7 @@ gltfLoader.load('kame.glb', (gltf) => {
 debugObject.nearColor = '#0596ed'
 debugObject.farColor = '#b3d7fb'
 
-const waterGeometry = new THREE.PlaneGeometry(100, 100, 512, 512)
+const waterGeometry = new THREE.PlaneGeometry(120, 120, 512, 512)
 const waterMaterial = new THREE.ShaderMaterial({
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmentShader,
@@ -103,8 +103,8 @@ window.addEventListener('resize', () => {
 // Base camera
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 1000)
 camera.position.x = -2
-camera.position.y = 9
-camera.position.z = 15
+camera.position.y = 12
+camera.position.z = 18
 scene.add(camera)
 
 // Controls
