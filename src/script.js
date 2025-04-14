@@ -9,10 +9,6 @@ import waterFragmentShader from './shaders/water/fragment.glsl'
  * Setup de base
  */
 
-const loadingScreen = document.getElementById('loading-screen');
-const loadingManager = new THREE.LoadingManager(() => {
-    loadingScreen.style.display = 'none';
-});
 
 const toggleDayButton = document.getElementById('toggleTheme')
 const toggleMusicButton = document.getElementById('toggleMusic')
@@ -30,7 +26,7 @@ const debugObject = {
 }
 
 // Canvas, textures et matériaux
-const textureLoader = new THREE.TextureLoader(loadingManager)
+const textureLoader = new THREE.TextureLoader()
 const bakedDayTexture = textureLoader.load('baked-day.jpg')
 const bakedNightTexture = textureLoader.load('baked.jpg')
 bakedDayTexture.colorSpace = THREE.SRGBColorSpace
