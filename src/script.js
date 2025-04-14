@@ -6,9 +6,10 @@ import waterVertexShader from './shaders/water/vertex.glsl'
 import waterFragmentShader from './shaders/water/fragment.glsl'
 import { cubeMapNode } from 'three/src/nodes/utils/CubeMapNode.js'
 // Theme toggle
-const toggleButton = document.getElementById('toggleTheme')
+const toggleDayButton = document.getElementById('toggleTheme')
+const toggleMusicButton = document.getElementById('toggleMusic')
 let isNight = false
-
+let muted = true
 /**
  * Base
  */
@@ -26,6 +27,9 @@ const scene = new THREE.Scene()
 /**
  * Loaders
  */
+
+
+
 // Texture loader
 const textureLoader = new THREE.TextureLoader()
 const bakedDayTexture = textureLoader.load('baked-day.jpg')
@@ -124,6 +128,23 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+const listener = new THREE.AudioListener()
+camera.add(listener)
+const soundDay = new THREE.Audio(listener)
+const soundNight = new THREE.Audio(listener)
+soundDay.setLoop(true)
+soundNight.setLoop(true)
+const audioLoader = new THREE.AudioLoader()
+audioLoader.load('music.mp3', (buffer) => {
+    soundDay.setBuffer(buffer)
+    soundDay.setLoop(true)
+    soundDay.setVolume(0.5)
+})
+audioLoader.load('ambient.mp3', (buffer) => {
+    soundNight.setBuffer(buffer)
+    soundNight.setLoop(true)
+    soundNight.setVolume(0.5)
+})
 /**
  * Animate
  */
@@ -146,13 +167,37 @@ tick()
 
 gui.hide()
 
-toggleButton.addEventListener('click', () => {
+toggleDayButton.addEventListener('click', () => {
     isNight = !isNight
-    toggleButton.textContent = isNight ? '🌙' : '🌞'
+    toggleDayButton.textContent = isNight ? '🌙' : '🌞'
     bakedMaterial.map = isNight ? bakedNightTexture : bakedDayTexture
     debugObject.nearColor = isNight ? '#046dac' : '#0596ed'
     debugObject.farColor = isNight ? '#304270' : '#b3d7fb'
     waterMaterial.uniforms.uColorNear.value.set(debugObject.nearColor)
     waterMaterial.uniforms.uColorFar.value.set(debugObject.farColor)
     bakedMaterial.needsUpdate = true
+    if (isNight) {
+        if (soundDay.isPlaying) soundDay.stop()
+        if (!soundNight.isPlaying) soundNight.play()
+    } else {
+        if (soundNight.isPlaying) soundNight.stop()
+        if (!soundDay.isPlaying) soundDay.play()
+    }
+})
+
+toggleMusicButton.addEventListener('click', () => {
+    muted = !muted
+    toggleMusicButton.textContent = muted ? '🔇' : '🎵'
+    if (muted) {
+        soundDay.stop()
+        soundNight.stop()
+        return;
+    }
+    if (isNight) {
+        if (soundDay.isPlaying) soundDay.stop()
+        if (!soundNight.isPlaying) soundNight.play()
+    } else {
+        if (soundNight.isPlaying) soundNight.stop()
+        if (!soundDay.isPlaying) soundDay.play()
+    }
 })
