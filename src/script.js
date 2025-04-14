@@ -57,15 +57,17 @@ const waterMaterial = new THREE.ShaderMaterial({
     fragmentShader: waterFragmentShader,
     uniforms: {
         uTime: { value: 0.0 },
-        uWaveSpeed: { value: 1.1 },
-        uWaveAmplitude: { value: 0.2 },
+        uWaveSpeed: { value: 1.05 },
+        uWaveAmplitude: { value: 0.1 },
         uColorNear: { value: new THREE.Color(debugObject.nearColor) },
         uColorFar: { value: new THREE.Color(debugObject.farColor) },
         uTextureSize: { value: 20.0 },
     },
     transparent: true,
+    opacity: 0.95
 });
 
+gui.hide()
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = -Math.PI / 2
 water.position.y = 1.3
