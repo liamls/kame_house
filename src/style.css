@@ -15,10 +15,9 @@ body {
     outline: none;
 }
 
-.toggle-theme {
+.toggle-button {
     position: absolute;
     top: 1rem;
-    right: 1rem;
     background: rgba(255, 255, 255, 0.274);
     border: none;
     font-size: 1.8rem;
@@ -29,50 +28,65 @@ body {
     transition: all 0.3s ease;
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-button:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+    .toggle-button {
+        font-size: 1.4rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        top: 0.8rem;
+    }
+}
+
+.toggle-theme {
+    right: 1rem;
 }
 
 .toggle-theme:hover {
     background: rgba(255, 238, 0, 0.582);
-    transform: scale(1.1);
-}
-
-@media (max-width: 600px) {
-    .toggle-theme {
-        font-size: 1.4rem;
-        width: 2.5rem;
-        height: 2.5rem;
-        top: 0.8rem;
-        right: 0.8rem;
-    }
 }
 
 .toggle-music {
-    position: absolute;
-    top: 1rem;
     right: 6rem;
-    background: rgba(255, 255, 255, 0.274);
-    border: none;
-    font-size: 1.8rem;
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-music:hover {
     background: rgba(0, 153, 255, 0.582);
-    transform: scale(1.1);
 }
 
-@media (max-width: 600px) {
-    .toggle-music {
-        font-size: 1.4rem;
-        width: 2.5rem;
-        height: 2.5rem;
-        top: 0.8rem;
-        right: 4rem;
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loader {
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-top: 6px solid rgba(0, 153, 255, 1);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
     }
 }
