@@ -32,7 +32,7 @@ body {
 }
 
 .toggle-theme:hover {
-    background: rgb(255, 238, 0);
+    background: rgba(255, 238, 0, 0.582);
     transform: scale(1.1);
 }
 
