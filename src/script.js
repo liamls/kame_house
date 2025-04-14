@@ -48,46 +48,32 @@ gltfLoader.load('kame.glb', (gltf) => {
  * Object
  */
 
-debugObject.depthColor = '#1d368d'
-debugObject.surfaceColor = '#008ae6'
-gui.addColor(debugObject, 'depthColor').onChange(() => { waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor) })
-gui.addColor(debugObject, 'surfaceColor').onChange(() => { waterMaterial.uniforms.uSurfaceColor.value.set(debugObject.surfaceColor) })
+debugObject.nearColor = '#046dac'
+debugObject.farColor = '#1768a4'
 
 const waterGeometry = new THREE.PlaneGeometry(100, 100, 512, 512)
 const waterMaterial = new THREE.ShaderMaterial({
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmentShader,
     uniforms: {
-        uBigWavesElevation: { value: 0.05 }, // Augmenté
-        uBigWavesFrequency: { value: new THREE.Vector2(1, 1.5) }, // Diminué
-        uTime: { value: 0 },
-        uBigWavesSpeed: { value: 0.7 }, // Légèrement diminué
-        uSmallWavesElevation: { value: 0.3 }, // Augmenté
-        uSmallWavesFrequency: { value: 1 }, // Augmenté
-        uSmallWavesSpeed: { value: 0.3 }, // Augmenté
-        uSmallWavesIterations: { value: 3 }, // Augmenté
-        uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
-        uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
-        uColorOffset: { value: 0.1 },
-        uColorMultiplier: { value: 1.3 }
-    }
+        uTime: { value: 0.0 },
+        uWaveSpeed: { value: 1.1 },
+        uWaveAmplitude: { value: 0.2 },
+        uColorNear: { value: new THREE.Color(debugObject.nearColor) },
+        uColorFar: { value: new THREE.Color(debugObject.farColor) },
+        uTextureSize: { value: 20.0 },
+    },
+    transparent: true,
 });
 
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = -Math.PI / 2
 water.position.y = 1.3
 scene.add(water)
-gui.add(waterMaterial.uniforms.uBigWavesElevation, 'value').min(0).max(2).step(0.01).name("uBigWavesElevation")
-gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'x').min(0).max(10).step(0.01).name("uBigWavesFrequencyX")
-gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'y').min(0).max(10).step(0.01).name("uBigWavesFrequencyY")
-gui.add(waterMaterial.uniforms.uBigWavesSpeed, 'value').min(0).max(4).step(0.01).name('uBigWavesSpeed')
-gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value').min(0).max(1).step(0.01).name('uSmallWavesElevation')
-gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value').min(0).max(20).step(0.01).name('uSmallWavesFrequency')
-gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value').min(0).max(4).step(0.01).name('uSmallWavesSpeed')
-gui.add(waterMaterial.uniforms.uSmallWavesIterations, 'value').min(0).max(5).step(1).name('uSmallWavesIterations')
-gui.add(waterMaterial.uniforms.uColorOffset, 'value').min(0).max(1).step(0.001).name('uColorOffset')
-gui.add(waterMaterial.uniforms.uColorMultiplier, 'value').min(0).max(10).step(0.001).name('uColorMultiplier')
-gui.hide()
+
+gui.addColor(debugObject, 'nearColor').onChange(() => { waterMaterial.uniforms.uColorNear.value.set(debugObject.nearColor) })
+gui.addColor(debugObject, 'farColor').onChange(() => { waterMaterial.uniforms.uColorFar.value.set(debugObject.farColor) })
+
 /** 
 * Sizes
  */
@@ -138,7 +124,7 @@ const clock = new THREE.Clock()
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
-    waterMaterial.uniforms.uTime.value = elapsedTime
+    waterMaterial.uniforms.uTime.value = elapsedTime;
     // Update controls
     controls.update()
 
