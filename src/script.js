@@ -176,3 +176,14 @@ window.addEventListener('resize', () => {
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const loader = document.getElementById('loader')
+        loader.style.display = 'none'
+        const buttons = document.querySelectorAll("button")
+        buttons.forEach((el) => {
+            el.style.visibility = "visible"
+        })
+    }, 1500)
+})
