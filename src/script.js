@@ -28,7 +28,7 @@ const debugObject = {
 // Canvas, textures et matériaux
 const textureLoader = new THREE.TextureLoader()
 const bakedDayTexture = textureLoader.load('baked-day.jpg')
-const bakedNightTexture = textureLoader.load('baked.jpg')
+const bakedNightTexture = textureLoader.load('baked-night.jpg')
 bakedDayTexture.colorSpace = THREE.SRGBColorSpace
 bakedNightTexture.colorSpace = THREE.SRGBColorSpace
 bakedDayTexture.flipY = false
@@ -44,7 +44,7 @@ gltfLoader.load('kame.glb', (gltf) => {
 })
 
 // Paramètres de l'eau
-const waterGeometry = new THREE.PlaneGeometry(120, 120, 512, 512)
+const waterGeometry = new THREE.PlaneGeometry(150, 150, 512, 512)
 const waterMaterial = new THREE.ShaderMaterial({
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmentShader,
@@ -61,7 +61,7 @@ const waterMaterial = new THREE.ShaderMaterial({
 })
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = -Math.PI / 2
-water.position.y = 1.3
+water.position.y = 0.5
 scene.add(water)
 
 // Interface utilisateur pour le contrôle des couleurs de l'eau
