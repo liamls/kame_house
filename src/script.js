@@ -100,12 +100,14 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 const listener = new THREE.AudioListener()
 camera.add(listener)
 
-const soundDay = new THREE.Audio(listener)
-const soundNight = new THREE.Audio(listener)
+const musicDay = new THREE.Audio(listener)
+const waves = new THREE.Audio(listener)
+const insects = new THREE.Audio(listener)
 
 const audioLoader = new THREE.AudioLoader()
-audioLoader.load('music-liam.mp3', (buffer) => soundDay.setBuffer(buffer).setLoop(true).setVolume(0.5))
-audioLoader.load('ambient.mp3', (buffer) => soundNight.setBuffer(buffer).setLoop(true).setVolume(0.5))
+audioLoader.load('sounds/day_music.mp3', (buffer) => musicDay.setBuffer(buffer).setLoop(true).setVolume(0.5))
+audioLoader.load('sounds/waves.mp3', (buffer) => waves.setBuffer(buffer).setLoop(true).setVolume(0.3))
+audioLoader.load('sounds/insects.mp3', (buffer) => insects.setBuffer(buffer).setLoop(true).setVolume(0.3))
 
 /**
  * Animation
@@ -137,12 +139,13 @@ const updateThemeAndMusic = () => {
     bakedMaterial.needsUpdate = true
     // Gestion des sons
     if (!muted) {
+        waves.play()
         if (isNight) {
-            soundDay.stop()
-            if (!soundNight.isPlaying) soundNight.play()
+            musicDay.stop()
+            insects.play()
         } else {
-            soundNight.stop()
-            if (!soundDay.isPlaying) soundDay.play()
+            insects.stop()
+            musicDay.play()
         }
     }
 }
@@ -160,8 +163,9 @@ toggleMusicButton.addEventListener('click', () => {
     muted = !muted
     toggleMusicButton.textContent = muted ? '🔇' : '🎵'
     if (muted) {
-        soundDay.stop()
-        soundNight.stop()
+        musicDay.stop()
+        insects.stop()
+        waves.stop()
     } else {
         updateThemeAndMusic()
     }
