@@ -145,7 +145,7 @@ const tick = () => {
         cloud.position.x = Math.sin(elapsedTime / 2) * 6;
         cloud.position.z = Math.cos(elapsedTime / 2) * 6;
         cloud.position.y = 5 + (Math.cos(elapsedTime)) / 2;
-        cloud.lookAt(0, cloud.position.y, 0);
+        cloud.lookAt(cloud.position.x + 1, cloud.position.y, cloud.position.z);
     }
     controls.update()
     renderer.render(scene, camera)
