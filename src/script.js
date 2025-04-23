@@ -22,10 +22,14 @@ const scene = new THREE.Scene()
 const gui = new GUI({ width: 300 })
 const debugObject = {
     nearColor: '#0596ed',
-    farColor: '#b3d7fb'
+    farColor: '#b3d7fb',
+    cloudColor: '##f5f387'
 }
 
 // Canvas, textures et matériaux
+const threeTone = new THREE.TextureLoader().load('threeTone.jpg')
+threeTone.minFilter = THREE.NearestFilter
+threeTone.magFilter = THREE.NearestFilter
 const textureLoader = new THREE.TextureLoader()
 const bakedDayTexture = textureLoader.load('baked-day.jpg')
 const bakedNightTexture = textureLoader.load('baked-night.jpg')
@@ -38,6 +42,19 @@ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedDayTexture })
 
 // GLTF Loader pour la scène
 const gltfLoader = new GLTFLoader()
+let cloud;
+gltfLoader.load('cloud.glb', (gltf) => {
+    cloud = gltf.scene
+    cloud.traverse((child) => {
+        if (child.isMesh) {
+            child.material = new THREE.MeshToonMaterial({ color: "yellow", gradientMap: threeTone })
+        }
+    })
+    cloud.scale.set(0.7, 0.7, 0.7)
+    cloud.position.y = 5
+    scene.add(cloud)
+})
+
 gltfLoader.load('kame.glb', (gltf) => {
     gltf.scene.traverse((child) => child.material = bakedMaterial)
     scene.add(gltf.scene)
@@ -109,6 +126,13 @@ audioLoader.load('sounds/day_music.mp3', (buffer) => musicDay.setBuffer(buffer).
 audioLoader.load('sounds/waves.mp3', (buffer) => waves.setBuffer(buffer).setLoop(true).setVolume(0.3))
 audioLoader.load('sounds/insects.mp3', (buffer) => insects.setBuffer(buffer).setLoop(true).setVolume(0.3))
 
+// Lights
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
+directionalLight.position.set(5, 100, 7.5)
+scene.add(directionalLight)
+const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+scene.add(ambientLight)
+
 /**
  * Animation
  */
@@ -117,6 +141,12 @@ const clock = new THREE.Clock()
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     waterMaterial.uniforms.uTime.value = elapsedTime
+    if (cloud) {
+        cloud.position.x = Math.sin(elapsedTime / 2) * 6;
+        cloud.position.z = Math.cos(elapsedTime / 2) * 6;
+        cloud.position.y = 5 + (Math.cos(elapsedTime)) / 2;
+        cloud.lookAt(0, cloud.position.y, 0);
+    }
     controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
@@ -134,6 +164,9 @@ const updateThemeAndMusic = () => {
     bakedMaterial.map = isNight ? bakedNightTexture : bakedDayTexture
     debugObject.nearColor = isNight ? '#046dac' : '#0596ed'
     debugObject.farColor = isNight ? '#304270' : '#b3d7fb'
+    if (cloud) {
+        cloud.visible = !isNight
+    }
     waterMaterial.uniforms.uColorNear.value.set(debugObject.nearColor)
     waterMaterial.uniforms.uColorFar.value.set(debugObject.farColor)
     bakedMaterial.needsUpdate = true
