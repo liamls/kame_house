@@ -122,11 +122,13 @@ camera.add(listener)
 const musicDay = new THREE.Audio(listener)
 const waves = new THREE.Audio(listener)
 const insects = new THREE.Audio(listener)
+const cloudEffect = new THREE.Audio(listener)
 
 const audioLoader = new THREE.AudioLoader()
 audioLoader.load('sounds/day_music.mp3', (buffer) => musicDay.setBuffer(buffer).setLoop(true).setVolume(0.5))
 audioLoader.load('sounds/waves.mp3', (buffer) => waves.setBuffer(buffer).setLoop(true).setVolume(0.3))
 audioLoader.load('sounds/insects.mp3', (buffer) => insects.setBuffer(buffer).setLoop(true).setVolume(0.3))
+audioLoader.load('sounds/cloud.mp3', (buffer) => cloudEffect.setBuffer(buffer).setVolume(0.5))
 
 // Lights
 const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
@@ -135,25 +137,77 @@ scene.add(directionalLight)
 const ambientLight = new THREE.AmbientLight(0xffffff, 1)
 scene.add(ambientLight)
 
+// Click handles
+
+let isMoving = false;
+let isMovingBack = true;
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+
+const moveCloud = () => {
+    if (cloud) {
+        if (cloud.position.x > 100) {
+            isMoving = false;
+            cloud.position.x = -100
+            isMovingBack = true
+        }
+        cloud.position.x += 0.8
+    }
+
+};
+
+const moveBackCloud = () => {
+    if (cloud) {
+        if (cloud.position.x > -2) {
+            isMovingBack = false;
+            cloud.rotation.y = Math.PI / 6
+        }
+        cloud.position.x += 0.8
+    }
+};
+
+window.addEventListener('mousemove', (event) => {
+    mouse.x = (event.clientX / sizes.width) * 2 - 1;
+    mouse.y = - (event.clientY / sizes.height) * 2 + 1;
+});
+
+window.addEventListener('click', () => {
+    if (cloud && !isMoving && !isMovingBack) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(cloud, true);
+        if (intersects.length > 0) {
+            console.log('Clic sur le nuage');
+            cloudEffect.play()
+            cloud.rotation.y = Math.PI / 2
+            isMoving = true;
+        }
+    }
+});
+
 /**
  * Animation
  */
 const clock = new THREE.Clock()
 
 const tick = () => {
-    const elapsedTime = clock.getElapsedTime()
-    waterMaterial.uniforms.uTime.value = elapsedTime
+    const elapsedTime = clock.getElapsedTime();
+    if (isMoving) {
+        moveCloud();
+    }
+    if (isMovingBack) {
+        moveBackCloud();
+    }
+    waterMaterial.uniforms.uTime.value = elapsedTime;
     if (cloud) {
         cloud.position.y = 5 + (Math.cos(elapsedTime) / 3);
     }
-    controls.update()
-    renderer.render(scene, camera)
-    window.requestAnimationFrame(tick)
-}
+    controls.update();
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(tick);
+};
 
-tick()
-
-gui.hide()
+tick();
+gui.hide();
 
 /**
  * Fonction de changement de thème (jour/nuit) et musique
@@ -212,6 +266,8 @@ window.addEventListener('resize', () => {
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
+
+
 
 window.addEventListener('load', () => {
     setTimeout(() => {
