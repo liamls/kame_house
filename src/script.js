@@ -8,8 +8,6 @@ import waterFragmentShader from './shaders/water/fragment.glsl'
 /**
  * Setup de base
  */
-
-
 const toggleDayButton = document.getElementById('toggleTheme')
 const toggleMusicButton = document.getElementById('toggleMusic')
 let isNight = false
@@ -27,8 +25,8 @@ const debugObject = {
 
 // Canvas, textures et matériaux
 const textureLoader = new THREE.TextureLoader()
-const bakedDayTexture = textureLoader.load('baked-day.jpg')
-const bakedNightTexture = textureLoader.load('baked-night.jpg')
+const bakedDayTexture = textureLoader.load('/textures/baked-day.jpg')
+const bakedNightTexture = textureLoader.load('/textures/baked-night.jpg')
 bakedDayTexture.colorSpace = THREE.SRGBColorSpace
 bakedNightTexture.colorSpace = THREE.SRGBColorSpace
 bakedDayTexture.flipY = false
@@ -44,7 +42,7 @@ const cloudMaterial = new THREE.MeshBasicMaterial({
 // GLTF Loader pour la scène
 const gltfLoader = new GLTFLoader()
 let cloud;
-gltfLoader.load('cloud.glb', (gltf) => {
+gltfLoader.load('/models/cloud.glb', (gltf) => {
     cloud = gltf.scene
     cloud.traverse((child) => {
         if (child.isMesh) {
@@ -57,13 +55,13 @@ gltfLoader.load('cloud.glb', (gltf) => {
     scene.add(cloud)
 })
 
-gltfLoader.load('kame.glb', (gltf) => {
+gltfLoader.load('/models/kame.glb', (gltf) => {
     gltf.scene.traverse((child) => child.material = bakedMaterial)
     scene.add(gltf.scene)
 })
 
 // Paramètres de l'eau
-const waterGeometry = new THREE.PlaneGeometry(300, 300, 512, 512)
+const waterGeometry = new THREE.CircleGeometry(200, 256);
 const waterMaterial = new THREE.ShaderMaterial({
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmentShader,
@@ -101,12 +99,12 @@ scene.add(camera)
 // Contrôles
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.minPolarAngle = Math.PI / 3   // ↩︎ Laisse l'utilisateur baisser un peu
-controls.maxPolarAngle = Math.PI / 2.5   // ↩︎ Laisse l'utilisateur lever un peu
-controls.enableZoom = true             // ↩︎ Active le zoom
-controls.minDistance = 15              // ↩︎ Zoom mini (plus proche que ça interdit)
-controls.maxDistance = 25              // ↩︎ Zoom max (plus loin que ça interdit)
-controls.enablePan = false             // ↩︎ Tu gardes le "pas de déplacement latéral"
+controls.minPolarAngle = Math.PI / 3
+controls.maxPolarAngle = Math.PI / 2.5
+controls.enableZoom = true
+controls.minDistance = 15
+controls.maxDistance = 25
+controls.enablePan = false
 
 /**
  * Renderer
