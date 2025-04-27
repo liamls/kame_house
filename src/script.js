@@ -72,7 +72,7 @@ scene.add(sky)
 
 const starMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
-    size: 2,
+    size: 3,
     transparent: true,
     opacity: 0.8,
     alphaMap: starTexture,
