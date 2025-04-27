@@ -121,21 +121,17 @@ body {
 
 .modal {
     display: none;
-    /* Caché par défaut */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Fond sombre transparent */
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    /* Devant tout */
 }
 
-/* Contenu du modal */
 .modal-content {
     background-color: white;
     border-radius: 15px;
@@ -151,7 +147,6 @@ body {
     margin: 2rem;
 }
 
-/* Bouton de fermeture */
 .close-button {
     position: absolute;
     top: 10px;
@@ -161,19 +156,6 @@ body {
     font-size: 30px;
     color: #333;
     cursor: pointer;
-}
-
-/* Style responsive */
-@media (max-width: 768px) {
-    .modal-content {
-        width: 90%;
-    }
-}
-
-@media (max-width: 480px) {
-    .modal-content {
-        width: 95%;
-    }
 }
 
 .sentence {
@@ -202,5 +184,13 @@ body {
 
 .contact-button:active {
     background-color: #388e3c;
-    transform: translateY(1px);
+}
+
+@media (max-width: 1000px) {
+    .modal-content {
+        width: 95vw;
+        height: 95vh;
+        font-size: 90%;
+    }
+
 }
