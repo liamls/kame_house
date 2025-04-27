@@ -233,18 +233,21 @@ window.addEventListener('mousemove', (event) => {
     mouse.y = - (event.clientY / sizes.height) * 2 + 1;
 });
 
-window.addEventListener('click', () => {
+window.addEventListener('click', onClickHandler);
+window.addEventListener('touchstart', onClickHandler);
+
+function onClickHandler(event) {
     if (cloud && !isMoving && !isMovingBack) {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObject(cloud, true);
         if (intersects.length > 0) {
             console.log('Clic sur le nuage');
-            cloudEffect.play()
-            cloud.rotation.y = Math.PI / 2
+            cloudEffect.play();
+            cloud.rotation.y = Math.PI / 2;
             isMoving = true;
         }
     }
-});
+}
 
 /**
  * Animation
