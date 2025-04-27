@@ -265,6 +265,13 @@ const tick = () => {
         const scaleFactor = 1 + 0.05 * Math.sin(elapsedTime);
         cloud.scale.set(0.3 * scaleFactor, 0.3 * scaleFactor, 0.3 * scaleFactor);
     }
+    if (clouds) {
+        clouds.rotation.y = elapsedTime / 30;
+        clouds.position.y = Math.cos(elapsedTime);
+    }
+    if (stars) {
+        stars.rotation.y = elapsedTime / 100;
+    }
     controls.update();
     renderer.render(scene, camera);
     window.requestAnimationFrame(tick);
