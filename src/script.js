@@ -155,7 +155,7 @@ const sizes = {
     height: window.innerHeight
 }
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 1000)
-camera.position.set(-8, 12, 18)
+camera.position.set(-8, 6, 18)
 scene.add(camera)
 
 // Contrôles
