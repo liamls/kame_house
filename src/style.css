@@ -188,8 +188,7 @@ body {
 
 @media (max-width: 1000px) {
     .modal-content {
-        width: 95vw;
-        height: 95vh;
+        width: 90%;
         font-size: 90%;
     }
 
