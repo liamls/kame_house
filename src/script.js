@@ -27,6 +27,7 @@ const debugObject = {
 // Canvas, textures et matériaux
 const textureLoader = new THREE.TextureLoader()
 const starTexture = textureLoader.load("/textures/star.png")
+const cloudsTexture = textureLoader.load("/textures/cloud.png")
 const bakedDayTexture = textureLoader.load('/textures/baked-day.jpg')
 const bakedNightTexture = textureLoader.load('/textures/baked-night.jpg')
 bakedDayTexture.colorSpace = THREE.SRGBColorSpace
@@ -68,6 +69,7 @@ const skyGeometry = new THREE.SphereGeometry(200)
 const skyMaterial = new THREE.MeshBasicMaterial({ color: debugObject.skyColor, side: THREE.BackSide })
 const sky = new THREE.Mesh(skyGeometry, skyMaterial)
 scene.add(sky)
+
 const starMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
     size: 2,
@@ -92,6 +94,32 @@ starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPosit
 const stars = new THREE.Points(starGeometry, starMaterial);
 stars.visible = false
 scene.add(stars);
+
+
+const cloudsMaterial = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 150,
+    transparent: true,
+    opacity: 0.3,
+    alphaMap: cloudsTexture,
+    depthWrite: false
+});
+const cloudsGeometry = new THREE.BufferGeometry();
+const cloudsCount = 200;
+const cloudsPositions = [];
+for (let i = 0; i < cloudsCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const radius = 190;
+    const x = Math.sin(phi) * Math.cos(theta) * radius;
+    const y = Math.sin(phi) * Math.sin(theta) * radius;
+    const z = Math.cos(phi) * radius;
+    cloudsPositions.push(x, y, z);
+}
+cloudsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(cloudsPositions, 3));
+const clouds = new THREE.Points(cloudsGeometry, cloudsMaterial);
+clouds.visible = true
+scene.add(clouds);
 
 // Paramètres de l'eau
 const waterGeometry = new THREE.CircleGeometry(200, 256);
@@ -250,6 +278,7 @@ gui.hide();
  */
 const updateThemeAndMusic = () => {
     stars.visible = isNight ? true : false;
+    clouds.visible = isNight ? false : true;
     bakedMaterial.map = isNight ? bakedNightTexture : bakedDayTexture
     debugObject.nearColor = isNight ? '#046dac' : '#0596ed'
     debugObject.farColor = isNight ? '#304270' : '#b3d7fb'
