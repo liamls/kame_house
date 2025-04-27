@@ -228,10 +228,27 @@ const moveBackCloud = () => {
     }
 };
 
+let isTouch = false;
+
+function updateMousePosition(event) {
+    if (isTouch) {
+        mouse.x = (event.touches[0].clientX / sizes.width) * 2 - 1;
+        mouse.y = - (event.touches[0].clientY / sizes.height) * 2 + 1;
+    } else {
+        mouse.x = (event.clientX / sizes.width) * 2 - 1;
+        mouse.y = - (event.clientY / sizes.height) * 2 + 1;
+    }
+}
+
 window.addEventListener('mousemove', (event) => {
-    mouse.x = (event.clientX / sizes.width) * 2 - 1;
-    mouse.y = - (event.clientY / sizes.height) * 2 + 1;
+    isTouch = false;
+    updateMousePosition(event);
 });
+
+window.addEventListener('touchstart', (event) => {
+    isTouch = true;
+    updateMousePosition(event);
+}, { passive: true });
 
 window.addEventListener('click', onClickHandler);
 window.addEventListener('touchstart', onClickHandler);
@@ -241,7 +258,6 @@ function onClickHandler(event) {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObject(cloud, true);
         if (intersects.length > 0) {
-            console.log('Clic sur le nuage');
             cloudEffect.play();
             cloud.rotation.y = Math.PI / 2;
             isMoving = true;
