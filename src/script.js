@@ -23,7 +23,6 @@ const gui = new GUI({ width: 300 })
 const debugObject = {
     nearColor: '#0596ed',
     farColor: '#b3d7fb',
-    cloudColor: '##f5f387'
 }
 
 // Canvas, textures et matériaux
@@ -64,7 +63,7 @@ gltfLoader.load('kame.glb', (gltf) => {
 })
 
 // Paramètres de l'eau
-const waterGeometry = new THREE.PlaneGeometry(150, 150, 512, 512)
+const waterGeometry = new THREE.PlaneGeometry(300, 300, 512, 512)
 const waterMaterial = new THREE.ShaderMaterial({
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmentShader,
@@ -102,10 +101,12 @@ scene.add(camera)
 // Contrôles
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.minPolarAngle = Math.PI / 3
-controls.maxPolarAngle = Math.PI / 3
-controls.enableZoom = false
-controls.enablePan = false
+controls.minPolarAngle = Math.PI / 3   // ↩︎ Laisse l'utilisateur baisser un peu
+controls.maxPolarAngle = Math.PI / 2.5   // ↩︎ Laisse l'utilisateur lever un peu
+controls.enableZoom = true             // ↩︎ Active le zoom
+controls.minDistance = 15              // ↩︎ Zoom mini (plus proche que ça interdit)
+controls.maxDistance = 25              // ↩︎ Zoom max (plus loin que ça interdit)
+controls.enablePan = false             // ↩︎ Tu gardes le "pas de déplacement latéral"
 
 /**
  * Renderer
