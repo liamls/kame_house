@@ -26,6 +26,7 @@ const debugObject = {
 
 // Canvas, textures et matériaux
 const textureLoader = new THREE.TextureLoader()
+const starTexture = textureLoader.load("/textures/star.png")
 const bakedDayTexture = textureLoader.load('/textures/baked-day.jpg')
 const bakedNightTexture = textureLoader.load('/textures/baked-night.jpg')
 bakedDayTexture.colorSpace = THREE.SRGBColorSpace
@@ -67,6 +68,30 @@ const skyGeometry = new THREE.SphereGeometry(200)
 const skyMaterial = new THREE.MeshBasicMaterial({ color: debugObject.skyColor, side: THREE.BackSide })
 const sky = new THREE.Mesh(skyGeometry, skyMaterial)
 scene.add(sky)
+const starMaterial = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 2,
+    transparent: true,
+    opacity: 0.8,
+    alphaMap: starTexture,
+    depthWrite: false
+});
+const starGeometry = new THREE.BufferGeometry();
+const starCount = 10000;
+const starPositions = [];
+for (let i = 0; i < starCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const radius = 190;
+    const x = Math.sin(phi) * Math.cos(theta) * radius;
+    const y = Math.sin(phi) * Math.sin(theta) * radius;
+    const z = Math.cos(phi) * radius;
+    starPositions.push(x, y, z);
+}
+starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+const stars = new THREE.Points(starGeometry, starMaterial);
+stars.visible = false
+scene.add(stars);
 
 // Paramètres de l'eau
 const waterGeometry = new THREE.CircleGeometry(200, 256);
@@ -224,7 +249,7 @@ gui.hide();
  * Fonction de changement de thème (jour/nuit) et musique
  */
 const updateThemeAndMusic = () => {
-    // Changement de thème
+    stars.visible = isNight ? true : false;
     bakedMaterial.map = isNight ? bakedNightTexture : bakedDayTexture
     debugObject.nearColor = isNight ? '#046dac' : '#0596ed'
     debugObject.farColor = isNight ? '#304270' : '#b3d7fb'
