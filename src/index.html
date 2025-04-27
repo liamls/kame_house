@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kame House - Three JS Journey Challenge</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -15,6 +16,48 @@
     <canvas class="webgl"></canvas>
     <button class="toggle-button toggle-theme" id="toggleTheme" aria-label="Toggle day/night">🌞</button>
     <button class="toggle-button toggle-music" id="toggleMusic" aria-label="Toggle music">🔇</button>
+    <button class="toggle-button toggle-info" id="toggleInfo" aria-label="Toggle info">ℹ️</button>
+    <div id="infoDialog" class="modal">
+        <div class="modal-content">
+            <button id="closeDialog" class="close-button">&times;</button>
+            <div class="modal-text">
+                <p class="sentence">
+                    Hi, I'm Liam Le Strat ! This website was created as part of my participation in the 17th Three.js
+                    Journey contest.
+                </p>
+                <p class="sentence">
+                    As a huge fan of Dragon Ball Z, I decided to recreate a version of the iconic Kame House. My goal
+                    was to design an immersive and visually pleasing environment, especially for the night-time setting.
+                </p>
+                <p class="sentence">
+                    You can toggle between day and night modes using the button, and feel free to enable the background
+                    music and sound effects if you prefer.
+                </p>
+                <p class="sentence">
+                    If you click on the cloud, you’ll see it move at super light speed! Don’t worry, it’ll return if
+                    you have a pure heart.
+                </p>
+                <p class="sentence">
+                    The daytime music featured is "Ginger Island" by ConcernedApe, from the game Stardew Valley.
+                </p>
+                <p class="sentence">
+                    This project highlights the skills I’ve developed in 3D modeling, Three.js, and shader programming.
+                    Although I haven’t completed the course yet, I’ve already started learning the shaders section.
+                </p>
+                <p class="sentence">
+                    Feel free to reach me !
+                <div class="contact-buttons">
+                    <a href="https://www.linkedin.com/in/liam-le-strat/" target="_blank"
+                        class="contact-button">LinkedIn</a>
+                    <a href="mailto:lestratliam@gmail.com" class="contact-button">Email</a>
+                    <a href="https://github.com/liamls" target="_blank" class="contact-button">Portfolio</a>
+                    <a href="https://github.com/liamlestrat" target="_blank" class="contact-button">GitHub</a>
+                </div>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="./script.js"></script>
 </body>
 

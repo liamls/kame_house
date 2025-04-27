@@ -6,6 +6,7 @@
 html,
 body {
     overflow: hidden;
+    font-family: 'Roboto', sans-serif;
 }
 
 .webgl {
@@ -57,7 +58,15 @@ body {
 }
 
 .toggle-music:hover {
-    background: rgba(0, 153, 255, 0.582);
+    background: rgba(180, 69, 255, 0.582);
+}
+
+.toggle-info {
+    right: 11rem;
+}
+
+.toggle-info:hover {
+    background: rgba(28, 101, 211, 0.582);
 }
 
 #loader {
@@ -108,4 +117,90 @@ body {
         transform: scale(1);
         opacity: 0;
     }
+}
+
+.modal {
+    display: none;
+    /* Caché par défaut */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fond sombre transparent */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* Devant tout */
+}
+
+/* Contenu du modal */
+.modal-content {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+    max-width: 80%;
+    width: 600px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.modal-text {
+    margin: 2rem;
+}
+
+/* Bouton de fermeture */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Style responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+    }
+}
+
+.sentence {
+    margin: 0.5rem 0;
+}
+
+.contact-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.contact-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-button:hover {
+    background-color: #45a049;
+}
+
+.contact-button:active {
+    background-color: #388e3c;
+    transform: translateY(1px);
 }

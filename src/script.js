@@ -279,3 +279,19 @@ window.addEventListener('load', () => {
         })
     }, 1500)
 })
+
+const toggleInfoButton = document.getElementById('toggleInfo');
+const infoDialog = document.getElementById('infoDialog');
+const closeDialogButton = document.getElementById('closeDialog');
+
+toggleInfoButton.addEventListener('click', () => {
+    infoDialog.style.display = 'flex';
+});
+closeDialogButton.addEventListener('click', () => {
+    infoDialog.style.display = 'none';
+});
+infoDialog.addEventListener('click', (event) => {
+    if (event.target === infoDialog) {
+        infoDialog.style.display = 'none';
+    }
+});
