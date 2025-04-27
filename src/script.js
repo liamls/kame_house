@@ -21,6 +21,7 @@ const gui = new GUI({ width: 300 })
 const debugObject = {
     nearColor: '#0596ed',
     farColor: '#b3d7fb',
+    skyColor: "#aDD8e6"
 }
 
 // Canvas, textures et matériaux
@@ -60,6 +61,13 @@ gltfLoader.load('/models/kame.glb', (gltf) => {
     scene.add(gltf.scene)
 })
 
+// Ciel
+
+const skyGeometry = new THREE.SphereGeometry(200)
+const skyMaterial = new THREE.MeshBasicMaterial({ color: debugObject.skyColor, side: THREE.BackSide })
+const sky = new THREE.Mesh(skyGeometry, skyMaterial)
+scene.add(sky)
+
 // Paramètres de l'eau
 const waterGeometry = new THREE.CircleGeometry(200, 256);
 const waterMaterial = new THREE.ShaderMaterial({
@@ -84,6 +92,7 @@ scene.add(water)
 // Interface utilisateur pour le contrôle des couleurs de l'eau
 gui.addColor(debugObject, 'nearColor').onChange(() => waterMaterial.uniforms.uColorNear.value.set(debugObject.nearColor))
 gui.addColor(debugObject, 'farColor').onChange(() => waterMaterial.uniforms.uColorFar.value.set(debugObject.farColor))
+gui.addColor(debugObject, 'skyColor').onChange(() => waterMaterial.uniforms.uColorFar.value.set(debugObject.skyColor))
 
 /**
  * Configuration de la caméra
@@ -151,7 +160,7 @@ const moveCloud = () => {
             cloud.position.x = -100
             isMovingBack = true
         }
-        cloud.position.x += 0.8
+        cloud.position.x += 0.95
     }
 
 };
@@ -162,7 +171,7 @@ const moveBackCloud = () => {
             isMovingBack = false;
             cloud.rotation.y = Math.PI / 6
         }
-        cloud.position.x += 0.8
+        cloud.position.x += 0.95
     }
 };
 
@@ -219,11 +228,13 @@ const updateThemeAndMusic = () => {
     bakedMaterial.map = isNight ? bakedNightTexture : bakedDayTexture
     debugObject.nearColor = isNight ? '#046dac' : '#0596ed'
     debugObject.farColor = isNight ? '#304270' : '#b3d7fb'
+    debugObject.skyColor = isNight ? "#080821" : "#aDD8e6"
     if (cloud) {
         cloud.visible = !isNight
     }
     waterMaterial.uniforms.uColorNear.value.set(debugObject.nearColor)
     waterMaterial.uniforms.uColorFar.value.set(debugObject.farColor)
+    skyMaterial.color.set(debugObject.skyColor)
     bakedMaterial.needsUpdate = true
     // Gestion des sons
     if (!muted) {
