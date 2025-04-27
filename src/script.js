@@ -199,7 +199,9 @@ const tick = () => {
     }
     waterMaterial.uniforms.uTime.value = elapsedTime;
     if (cloud) {
-        cloud.position.y = 5 + (Math.cos(elapsedTime) / 3);
+        cloud.position.y = 5 + (Math.cos(elapsedTime) / 5);
+        const scaleFactor = 1 + 0.05 * Math.sin(elapsedTime);
+        cloud.scale.set(0.3 * scaleFactor, 0.3 * scaleFactor, 0.3 * scaleFactor);
     }
     controls.update();
     renderer.render(scene, camera);
