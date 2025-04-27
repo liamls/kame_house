@@ -27,9 +27,6 @@ const debugObject = {
 }
 
 // Canvas, textures et matériaux
-const threeTone = new THREE.TextureLoader().load('threeTone.jpg')
-threeTone.minFilter = THREE.NearestFilter
-threeTone.magFilter = THREE.NearestFilter
 const textureLoader = new THREE.TextureLoader()
 const bakedDayTexture = textureLoader.load('baked-day.jpg')
 const bakedNightTexture = textureLoader.load('baked-night.jpg')
@@ -39,6 +36,11 @@ bakedDayTexture.flipY = false
 bakedNightTexture.flipY = false
 
 const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedDayTexture })
+const cloudMaterial = new THREE.MeshBasicMaterial({
+    color: "#f7d87c",
+    transparent: true,
+    opacity: 0.95,
+})
 
 // GLTF Loader pour la scène
 const gltfLoader = new GLTFLoader()
@@ -47,11 +49,12 @@ gltfLoader.load('cloud.glb', (gltf) => {
     cloud = gltf.scene
     cloud.traverse((child) => {
         if (child.isMesh) {
-            child.material = new THREE.MeshToonMaterial({ color: "yellow", gradientMap: threeTone })
+            child.material = cloudMaterial
         }
     })
-    cloud.scale.set(0.7, 0.7, 0.7)
-    cloud.position.y = 5
+    cloud.scale.set(0.3, 0.3, 0.3)
+    cloud.position.set(-2, 2, -2)
+    cloud.rotation.y = Math.PI / 6
     scene.add(cloud)
 })
 
@@ -142,10 +145,7 @@ const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     waterMaterial.uniforms.uTime.value = elapsedTime
     if (cloud) {
-        cloud.position.x = Math.sin(elapsedTime / 2) * 6;
-        cloud.position.z = Math.cos(elapsedTime / 2) * 6;
-        cloud.position.y = 5 + (Math.cos(elapsedTime)) / 2;
-        cloud.lookAt(cloud.position.x + 1, cloud.position.y, cloud.position.z);
+        cloud.position.y = 5 + (Math.cos(elapsedTime) / 3);
     }
     controls.update()
     renderer.render(scene, camera)
